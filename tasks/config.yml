@@ -1,0 +1,30 @@
+---
+- name: KAPI | Create compose file directory
+  file:
+    path: '{{ kapi_service_path }}'
+    state: directory
+    owner: 'dockremap'
+    group: 'docker'
+    recurse: true
+
+# - name: KAPI | Create container directory
+#   file:
+#     path: '{{ kapi_cont_vol }}'
+#     state: directory
+#     owner: 'dockremap'
+#     group: 'docker'
+#     recurse: true
+
+- name: KAPI | Check for cert file
+  stat:
+    path: '{{ node_ca_certs_repo_path }}'
+  register: cert
+
+- name: KAPI | Create cert directory
+  file:
+    path: '{{ node_ca_certs_path }}'
+    state: directory
+    owner: 'dockremap'
+    group: 'docker'
+    recurse: true
+  when: cert.stat.exists

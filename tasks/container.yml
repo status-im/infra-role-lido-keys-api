@@ -1,0 +1,25 @@
+---
+- name: KAPI | Create compose file
+  template:
+    src: '../templates/docker-compose.yml.j2'
+    dest: '{{ kapi_compose_file }}'
+    owner: 'dockremap'
+    group: 'docker'
+    mode: 0644
+
+- name: KAPI | Node certs
+  template:
+    src: '{{ node_ca_certs_repo_path }}'
+    dest: '{{ node_ca_certs_path }}'
+    owner: 'dockremap'
+    group: 'docker'
+    mode: 0644
+  when: cert.stat.exists
+
+- name: KAPI | Create container
+  docker_compose:
+    project_src: '{{ kapi_service_path }}'
+    pull: true
+    state: '{{ compose_state }}'
+    restarted: '{{ compose_restart }}'
+    recreate: '{{ compose_recreate }}'

@@ -1,0 +1,65 @@
+---
+
+kapi_service_name: 'kapi'
+kapi_service_path: '/docker/{{ kapi_service_name}}'
+kapi_compose_file: '{{ kapi_service_path }}/docker-compose.yml'
+
+# Database
+db_port: 5432
+db_host: 'db'
+db_name: 'node_operator_keys_service_db'
+db_user: 'postgres'
+db_password: 'postgres'
+
+# container
+kapi_version: '0.8.1'
+kapi_cont_image: 'lidofinance/lido-keys-api:{{ kapi_version }}'
+kapi_cont_name: '{{ kapi_service_name }}'
+# kapi_cont_vol: '{{ kapi_service_path }}/app'
+
+# Node
+node_env: 'production'
+node_extra_ca_certs: '/ca/{{ kapi_service_name }}.cert'
+node_ca_certs_repo_path: ''
+node_ca_certs_path: '{{ kapi_service_path }}/ca/{{ kapi_service_name }}.cert'
+
+# App
+kapi_port: '3000'
+
+# CORS
+kapi_cors_whitelist_regexp: '^https?://(?:.+?\.)?(?:lido|testnet|mainnet)\.fi$'
+
+# The number of seconds that each request will last in storage
+kapi_global_throttle_ttl: 1
+
+# The maximum number of requests within the TTL limit
+kapi_global_throttle_limit: 100
+
+# Cache expiration time in seconds
+kapi_global_cache_ttl: 1
+
+# Log level: debug, info, notice, warning or error
+kapi_log_level: 'debug'
+
+# Log format: simple or json
+kapi_log_format: json
+kapi_providers_urls: 'https://mainnet.infura.io/v3/XXX,https://eth-mainnet.alchemyapi.io/v2/YYY'
+# chain id
+# for mainnet 1
+# for testnet 5
+kapi_chain_id: '5'
+
+# consensus api urls
+kapi_cl_api_urls: 'https://quiknode.pro/<token>'
+
+# for some applications we dont need validators registry library
+# value below is default
+kapi_validator_registry_enable: true
+
+kapi_job_interval_registry: ''
+kapi_job_interval_validators_registry: ''
+
+# general container management
+compose_recreate: 'smart'
+compose_state: 'present'
+compose_restart: false

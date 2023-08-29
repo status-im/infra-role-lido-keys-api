@@ -1,0 +1,43 @@
+---
+version: '3.7'
+services:
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB={{ db_name }}
+      - POSTGRES_USER={{ db_user }}
+      - POSTGRES_PASSWORD={{ db_password }}
+    volumes:
+      - ./.volumes/pgdata-{{ kapi_chain_id }}/:/var/lib/postgresql/data
+      - {{ node_ca_certs_path }}:{{ node_extra_ca_certs }}
+
+  app:  
+    container_name: '{{ kapi_service_name }}'
+    image: lidofinance/lido-keys-api:0.8.1
+    restart: always
+    environment:
+      - NODE_ENV={{ node_env }}
+      - PORT={{ kapi_port }}
+      - CORS_WHITELIST_REGEXP={{ kapi_cors_whitelist_regexp }}
+      - GLOBAL_THROTTLE_TTL={{ kapi_global_throttle_ttl }}
+      - GLOBAL_THROTTLE_LIMIT={{ kapi_global_throttle_limit }}
+      - GLOBAL_CACHE_TTL={{ kapi_global_cache_ttl }}
+      - LOG_LEVEL={{ kapi_log_level }}
+      - LOG_FORMAT={{ kapi_log_format }}
+      - PROVIDERS_URLS={{ kapi_providers_urls }}
+      - CL_API_URLS={{ kapi_cl_api_urls }}
+      - CHAIN_ID={{ kapi_chain_id }}
+      - DB_NAME={{ db_name }}
+      - DB_PORT={{ db_port }}
+      - DB_HOST={{ db_host }}
+      - DB_USER={{ db_user }}
+      - DB_PASSWORD={{ db_password }}
+      - JOB_INTERVAL_REGISTRY={{ kapi_job_interval_registry }}
+      - VALIDATOR_REGISTRY_ENABLE={{ kapi_validator_registry_enable }}
+      - JOB_INTERVAL_VALIDATORS_REGISTRY={{ kapi_job_interval_validators_registry }}
+      - NODE_EXTRA_CA_CERTS={{ node_extra_ca_certs }}
+    ports:
+      - '{{ kapi_port }}:{{ kapi_port }}'
+    depends_on:
+      - db
